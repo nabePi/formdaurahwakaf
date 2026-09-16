@@ -69,15 +69,19 @@
     <span class="error-msg" id="err-namaBisnis"></span>
 
     <h2 class="question">Bidang Usaha</h2>
-    <select id="bidangUsaha" required>
-      <option value="" disabled selected>Pilih bidang usaha</option>
-      <option value="F&B">F&B</option>
-      <option value="Perdagangan/Retail">Perdagangan/Retail</option>
-      <option value="Jasa/Konsultan">Jasa/Konsultan</option>
-      <option value="Properti">Properti</option>
-      <option value="Teknologi/Digital">Teknologi/Digital</option>
-      <option value="Lainnya">Lainnya</option>
-    </select>
+    <div class="custom-select" id="bidangUsahaSelect">
+      <button type="button" class="custom-select-trigger" id="bidangUsahaTrigger">
+        <span class="custom-select-value placeholder" id="bidangUsahaValueText">Pilih bidang usaha</span>
+      </button>
+      <ul class="custom-select-options hidden" id="bidangUsahaOptions">
+        <li data-value="F&amp;B">F&amp;B</li>
+        <li data-value="Perdagangan/Retail">Perdagangan/Retail</li>
+        <li data-value="Jasa/Konsultan">Jasa/Konsultan</li>
+        <li data-value="Properti">Properti</li>
+        <li data-value="Teknologi/Digital">Teknologi/Digital</li>
+        <li data-value="Lainnya">Lainnya</li>
+      </ul>
+    </div>
     <span class="error-msg" id="err-bidangUsaha"></span>
 
     <h2 class="question">Ketertarikan Utama Mengikuti Daurah Ini</h2>

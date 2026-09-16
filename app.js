@@ -112,6 +112,40 @@ function initRadioGroups() {
   });
 }
 
+// Custom dropdown for "Bidang Usaha" (native <select> popups render inconsistently on mobile)
+function initCustomSelect(containerId) {
+  const container = document.getElementById(containerId);
+  const trigger = container.querySelector(".custom-select-trigger");
+  const valueText = container.querySelector(".custom-select-value");
+  const optionsList = container.querySelector(".custom-select-options");
+
+  trigger.addEventListener("click", () => {
+    optionsList.classList.toggle("hidden");
+    trigger.classList.toggle("open");
+  });
+
+  optionsList.querySelectorAll("li").forEach((li) => {
+    li.addEventListener("click", () => {
+      container.dataset.value = li.dataset.value;
+      valueText.textContent = li.textContent;
+      valueText.classList.remove("placeholder");
+
+      optionsList.querySelectorAll("li").forEach((opt) => opt.classList.remove("selected"));
+      li.classList.add("selected");
+
+      optionsList.classList.add("hidden");
+      trigger.classList.remove("open");
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!container.contains(e.target)) {
+      optionsList.classList.add("hidden");
+      trigger.classList.remove("open");
+    }
+  });
+}
+
 // ---- Step 0: Landing --------------------------------------------------
 document.getElementById("btn-start").addEventListener("click", () => {
   goToStep(1);
@@ -171,7 +205,7 @@ document.getElementById("btn-step2A-back").addEventListener("click", () => {
 
 document.getElementById("btn-step2A-next").addEventListener("click", () => {
   const namaBisnis = document.getElementById("namaBisnis").value.trim();
-  const bidangUsaha = document.getElementById("bidangUsaha").value;
+  const bidangUsaha = document.getElementById("bidangUsahaSelect").dataset.value || "";
   const ketertarikanPengusaha = getRadioValue("ketertarikanPengusaha");
 
   clearErrors(["namaBisnis", "bidangUsaha", "ketertarikanPengusaha"]);
@@ -411,4 +445,5 @@ async function submitToWebhook(data) {
 
 // ---- Init -------------------------------------------------------------
 initRadioGroups();
+initCustomSelect("bidangUsahaSelect");
 updateProgress("step-0");
