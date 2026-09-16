@@ -340,12 +340,22 @@ document.getElementById("btn-step3-next").addEventListener("click", async () => 
   if (!valid) return;
 
   const nextBtn = document.getElementById("btn-step3-next");
-  nextBtn.disabled = true;
   const statusEl = document.getElementById("upload-status");
+  const progressWrap = document.getElementById("upload-progress-wrap");
+  const progressFill = document.getElementById("upload-progress-fill");
+  const progressPercent = document.getElementById("upload-progress-percent");
+
+  nextBtn.disabled = true;
   statusEl.textContent = "Mengunggah bukti transfer...";
+  progressWrap.classList.remove("hidden");
+  progressFill.style.width = "0%";
+  progressPercent.textContent = "0%";
 
   try {
-    const uploadedUrl = await uploadFileToDrive(uploadedFile);
+    const uploadedUrl = await uploadFileToDrive(uploadedFile, (percent) => {
+      progressFill.style.width = percent + "%";
+      progressPercent.textContent = percent + "%";
+    });
     formData.nominalBayar = nominalBayar;
     formData.buktiBayarUrl = uploadedUrl;
     statusEl.textContent = "Bukti transfer berhasil diunggah.";
@@ -355,6 +365,7 @@ document.getElementById("btn-step3-next").addEventListener("click", async () => 
     showError("buktiBayar", "Gagal mengunggah file. Silakan coba lagi.");
   } finally {
     nextBtn.disabled = false;
+    progressWrap.classList.add("hidden");
   }
 });
 
@@ -374,25 +385,47 @@ function readFileAsBase64(file) {
   });
 }
 
-async function uploadFileToDrive(file) {
+// Google Apps Script's web app doesn't handle CORS preflight requests, and
+// listening to xhr.upload.onprogress forces the browser to preflight (per the
+// Fetch spec), which breaks the request. So real byte-level upload progress
+// isn't available here — this simulates a smooth progress animation instead,
+// easing toward 90% while the request is in flight and jumping to 100% on success.
+function simulateProgress(onProgress) {
+  let percent = 0;
+  const interval = setInterval(() => {
+    percent += (90 - percent) * 0.1;
+    onProgress(Math.min(Math.round(percent), 89));
+  }, 200);
+  return () => clearInterval(interval);
+}
+
+async function uploadFileToDrive(file, onProgress) {
   const fileData = await readFileAsBase64(file);
+  if (onProgress) onProgress(5);
 
-  const response = await fetch(GAS_WEBHOOK_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "uploadFile",
-      fileName: file.name,
-      fileType: file.type,
-      fileData: fileData
-    })
-  });
+  const stopSimulation = onProgress ? simulateProgress(onProgress) : null;
 
-  if (!response.ok) {
-    throw new Error("Failed to upload file to Drive");
+  try {
+    const response = await fetch(GAS_WEBHOOK_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "uploadFile",
+        fileName: file.name,
+        fileType: file.type,
+        fileData: fileData
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to upload file to Drive");
+    }
+
+    const { publicUrl } = await response.json();
+    if (onProgress) onProgress(100);
+    return publicUrl;
+  } finally {
+    if (stopSimulation) stopSimulation();
   }
-
-  const { publicUrl } = await response.json();
-  return publicUrl;
 }
 
 // ---- Step 4: Consent & Submit --------------------------------------------
