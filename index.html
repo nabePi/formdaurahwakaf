@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pendaftaran Daurah Wakaf</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app-container">
+
+  <!-- Progress Indicator -->
+  <div id="progress-wrap" class="hidden">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <p id="progress-text">Step 1 of 4</p>
+  </div>
+
+  <!-- Step 0: Landing -->
+  <section id="step-0" class="step-container active">
+    <img src="poster.jpeg" alt="Daurah Wakaf - 7 November 2026" class="poster">
+    <h1 class="event-title">Daurah Wakaf</h1>
+    <p class="event-date">7 November 2026</p>
+    <button type="button" class="btn-primary" id="btn-start">Mulai Daftar</button>
+  </section>
+
+  <!-- Step 1: Data Umum -->
+  <section id="step-1" class="step-container">
+    <h2 class="question">Nama Lengkap</h2>
+    <input type="text" id="namaLengkap" placeholder="Tulis nama lengkap Anda" required>
+    <span class="error-msg" id="err-namaLengkap"></span>
+
+    <h2 class="question">No. WhatsApp</h2>
+    <input type="tel" id="noWhatsApp" placeholder="08xxxxxxxxxx" required>
+    <span class="error-msg" id="err-noWhatsApp"></span>
+
+    <h2 class="question">Kota Domisili</h2>
+    <input type="text" id="kotaDomisili" placeholder="Tulis kota domisili Anda" required>
+    <span class="error-msg" id="err-kotaDomisili"></span>
+
+    <h2 class="question">Email <span class="optional-label">(opsional)</span></h2>
+    <input type="email" id="email" placeholder="nama@email.com">
+
+    <h2 class="question">Latar Belakang</h2>
+    <div class="radio-group" id="group-latarBelakang">
+      <label class="radio-label">
+        <input type="radio" name="latarBelakang" value="pengusaha">
+        Pengusaha
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="latarBelakang" value="profesional">
+        Profesional
+      </label>
+    </div>
+    <span class="error-msg" id="err-latarBelakang"></span>
+
+    <div class="button-row">
+      <button type="button" class="btn-secondary" id="btn-step1-back">Kembali</button>
+      <button type="button" class="btn-primary" id="btn-step1-next">Lanjut</button>
+    </div>
+  </section>
+
+  <!-- Step 2A: Khusus Pengusaha -->
+  <section id="step-2A" class="step-container">
+    <p class="section-intro">Bagian ini untuk mengetahui kapasitas dan sektor bisnis Anda, guna melihat peluang sinergi wakaf produktif.</p>
+
+    <h2 class="question">Nama Bisnis / Perusahaan</h2>
+    <input type="text" id="namaBisnis" placeholder="Tulis nama bisnis/perusahaan">
+    <span class="error-msg" id="err-namaBisnis"></span>
+
+    <h2 class="question">Bidang Usaha</h2>
+    <select id="bidangUsaha" required>
+      <option value="" disabled selected>Pilih bidang usaha</option>
+      <option value="F&B">F&B</option>
+      <option value="Perdagangan/Retail">Perdagangan/Retail</option>
+      <option value="Jasa/Konsultan">Jasa/Konsultan</option>
+      <option value="Properti">Properti</option>
+      <option value="Teknologi/Digital">Teknologi/Digital</option>
+      <option value="Lainnya">Lainnya</option>
+    </select>
+    <span class="error-msg" id="err-bidangUsaha"></span>
+
+    <h2 class="question">Ketertarikan Utama Mengikuti Daurah Ini</h2>
+    <div class="radio-group" id="group-ketertarikanPengusaha">
+      <label class="radio-label">
+        <input type="radio" name="ketertarikanPengusaha" value="Ingin belajar dasar-dasar fiqih wakaf">
+        Ingin belajar dasar-dasar fiqih wakaf
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="ketertarikanPengusaha" value="Ingin merencanakan wakaf dari aset/keuntungan bisnis">
+        Ingin merencanakan wakaf dari aset/keuntungan bisnis
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="ketertarikanPengusaha" value="Ingin mencari peluang sinergi/mitra bisnis berbasis wakaf">
+        Ingin mencari peluang sinergi/mitra bisnis berbasis wakaf
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="ketertarikanPengusaha" value="Lainnya">
+        Lainnya
+      </label>
+    </div>
+    <span class="error-msg" id="err-ketertarikanPengusaha"></span>
+
+    <div class="button-row">
+      <button type="button" class="btn-secondary" id="btn-step2A-back">Kembali</button>
+      <button type="button" class="btn-primary" id="btn-step2A-next">Lanjut</button>
+    </div>
+  </section>
+
+  <!-- Step 2B: Khusus Profesional -->
+  <section id="step-2B" class="step-container">
+    <p class="section-intro">Bagian ini untuk memetakan keahlian yang mungkin bisa diwakafkan (Wakaf Keahlian/Profesi) guna mendukung nazhir atau ekosistem wakaf.</p>
+
+    <h2 class="question">Profesi / Jabatan Saat Ini</h2>
+    <input type="text" id="profesi" placeholder="Contoh: Akuntan Publik, Dokter Gigi, Arsitek">
+    <span class="error-msg" id="err-profesi"></span>
+
+    <h2 class="question">Instansi / Tempat Bekerja</h2>
+    <input type="text" id="instansi" placeholder="Tulis instansi/tempat bekerja">
+    <span class="error-msg" id="err-instansi"></span>
+
+    <h2 class="question">Bentuk Kontribusi Wakaf yang Paling Diminati</h2>
+    <div class="radio-group" id="group-kontribusiProfesional">
+      <label class="radio-label">
+        <input type="radio" name="kontribusiProfesional" value="Wakaf Uang / Aset (Tunai / Berkala)">
+        Wakaf Uang / Aset (Tunai / Berkala)
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="kontribusiProfesional" value="Wakaf Profesi (Menyumbangkan waktu & keahlian untuk umat)">
+        Wakaf Profesi (Menyumbangkan waktu & keahlian untuk umat)
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="kontribusiProfesional" value="Hanya ingin belajar literasi wakaf terlebih dahulu">
+        Hanya ingin belajar literasi wakaf terlebih dahulu
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="kontribusiProfesional" value="Lainnya">
+        Lainnya
+      </label>
+    </div>
+    <span class="error-msg" id="err-kontribusiProfesional"></span>
+
+    <div class="button-row">
+      <button type="button" class="btn-secondary" id="btn-step2B-back">Kembali</button>
+      <button type="button" class="btn-primary" id="btn-step2B-next">Lanjut</button>
+    </div>
+  </section>
+
+  <!-- Step 3: Pembayaran -->
+  <section id="step-3" class="step-container">
+    <h2 class="question">Informasi Pembayaran</h2>
+    <p class="section-intro">
+      Silakan transfer ke rekening berikut:<br>
+      <strong>BSI: 1234567890</strong><br>
+      a.n Sirah Community Indonesia
+    </p>
+
+    <h2 class="question">Pilihan Nominal</h2>
+    <div class="radio-group" id="group-nominalBayar">
+      <label class="radio-label">
+        <input type="radio" name="nominalBayarPilihan" value="350000">
+        Rp 350.000
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="nominalBayarPilihan" value="400000">
+        Rp 400.000
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="nominalBayarPilihan" value="500000">
+        Rp 500.000
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="nominalBayarPilihan" value="lainnya">
+        Lainnya
+      </label>
+    </div>
+    <span class="error-msg" id="err-nominalBayarPilihan"></span>
+
+    <div id="nominal-lainnya-wrap" class="hidden">
+      <h2 class="question">Nominal Lainnya</h2>
+      <input type="number" id="nominalLainnya" placeholder="Minimal Rp 350.000">
+      <span class="error-msg" id="err-nominalLainnya"></span>
+    </div>
+
+    <h2 class="question">Bukti Transfer</h2>
+    <input type="file" id="buktiBayar" accept="image/*, application/pdf">
+    <span class="error-msg" id="err-buktiBayar"></span>
+    <p id="upload-status" class="upload-status"></p>
+
+    <div class="button-row">
+      <button type="button" class="btn-secondary" id="btn-step3-back">Kembali</button>
+      <button type="button" class="btn-primary" id="btn-step3-next">Lanjut</button>
+    </div>
+  </section>
+
+  <!-- Step 4: Consent & Submit -->
+  <section id="step-4" class="step-container">
+    <h2 class="question">Izin Follow-up</h2>
+    <div class="radio-group" id="group-izinFollowUp">
+      <label class="radio-label">
+        <input type="radio" name="izinFollowUp" value="Ya, bersedia dihubungi">
+        Ya, bersedia dihubungi
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="izinFollowUp" value="Ya, kirim pesan dulu">
+        Ya, kirim pesan dulu
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="izinFollowUp" value="Tidak">
+        Tidak
+      </label>
+    </div>
+    <span class="error-msg" id="err-izinFollowUp"></span>
+
+    <div class="button-row">
+      <button type="button" class="btn-secondary" id="btn-step4-back">Kembali</button>
+      <button type="button" class="btn-primary" id="btn-submit">Submit</button>
+    </div>
+  </section>
+
+  <!-- Success -->
+  <section id="step-success" class="step-container">
+    <h1 class="event-title">Terima kasih!</h1>
+    <p class="section-intro">Pendaftaran Anda untuk Daurah Wakaf telah berhasil kami terima. Tim kami akan menghubungi Anda melalui WhatsApp jika diperlukan.</p>
+  </section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
