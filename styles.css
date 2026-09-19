@@ -107,6 +107,20 @@ body {
   color: var(--color-muted);
 }
 
+.payment-info-box {
+  background: #EFF6FF;
+  border: 1px solid var(--color-accent);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.payment-info-box strong {
+  color: var(--color-accent);
+  font-size: 1.05rem;
+}
+
 /* Inputs */
 input[type="text"],
 input[type="tel"],
@@ -275,6 +289,18 @@ input[type="file"] {
   border-color: var(--color-accent);
 }
 
+.radio-hint {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--color-muted);
+  margin-top: 4px;
+}
+
+.radio-label.checked .radio-hint {
+  color: rgba(255, 255, 255, 0.85);
+}
+
 /* Buttons */
 .btn-primary {
   display: block;
@@ -298,6 +324,28 @@ input[type="file"] {
 .btn-primary:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.btn-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: #25D366;
+  color: #fff;
+  border-radius: 6px;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 24px;
+  transition: opacity 0.2s ease;
+  box-sizing: border-box;
+}
+
+.btn-whatsapp:hover {
+  opacity: 0.85;
 }
 
 .button-row {

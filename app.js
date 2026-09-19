@@ -16,6 +16,13 @@ let formData = {
   email: "",
   latarBelakang: "", // "pengusaha" | "profesional"
 
+  // Step 1: Payment
+  nominalBayar: 0,
+  buktiBayarUrl: "",
+
+  // Step 1: Consent
+  izinFollowUp: "",
+
   // Step 2A: Pengusaha
   namaBisnis: "",
   bidangUsaha: "",
@@ -24,26 +31,17 @@ let formData = {
   // Step 2B: Profesional
   profesi: "",
   instansi: "",
-  kontribusiProfesional: "",
-
-  // Step 3: Payment
-  nominalBayar: 0,
-  buktiBayarUrl: "",
-
-  // Step 4: Consent
-  izinFollowUp: ""
+  ketertarikanProfesional: ""
 };
 
-// Order used for the progress indicator ("Step X of 4").
+// Order used for the progress indicator ("Step X of 2").
 // 2A and 2B share position 2 since they are mutually exclusive branches.
 const STEP_POSITIONS = {
   "step-1": 1,
   "step-2A": 2,
-  "step-2B": 2,
-  "step-3": 3,
-  "step-4": 4
+  "step-2B": 2
 };
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 2;
 
 // ---- Step navigation ------------------------------------------------------
 function goToStep(stepId) {
@@ -94,11 +92,17 @@ function getRadioValue(name) {
   return checked ? checked.value : "";
 }
 
-// Style the clickable label block when a radio is selected
+function getCheckboxValues(name) {
+  return Array.from(
+    document.querySelectorAll('input[name="' + name + '"]:checked')
+  ).map((el) => el.value);
+}
+
+// Style the clickable label block when a radio/checkbox is selected
 function initRadioGroups() {
   document.querySelectorAll(".radio-group").forEach((group) => {
     group.addEventListener("change", (e) => {
-      if (e.target.type !== "radio") return;
+      if (e.target.type !== "radio" && e.target.type !== "checkbox") return;
       const name = e.target.name;
       document
         .querySelectorAll('input[name="' + name + '"]')
@@ -151,124 +155,7 @@ document.getElementById("btn-start").addEventListener("click", () => {
   goToStep(1);
 });
 
-// ---- Step 1: Data Umum --------------------------------------------------
-document.getElementById("btn-step1-back").addEventListener("click", () => {
-  goToStep(0);
-});
-
-document.getElementById("btn-step1-next").addEventListener("click", () => {
-  const namaLengkap = document.getElementById("namaLengkap").value.trim();
-  const noWhatsApp = document.getElementById("noWhatsApp").value.trim();
-  const kotaDomisili = document.getElementById("kotaDomisili").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const latarBelakang = getRadioValue("latarBelakang");
-
-  clearErrors(["namaLengkap", "noWhatsApp", "kotaDomisili", "latarBelakang"]);
-  let valid = true;
-
-  if (!namaLengkap) {
-    showError("namaLengkap", "Nama lengkap wajib diisi.");
-    valid = false;
-  }
-  if (!noWhatsApp) {
-    showError("noWhatsApp", "No. WhatsApp wajib diisi.");
-    valid = false;
-  }
-  if (!kotaDomisili) {
-    showError("kotaDomisili", "Kota domisili wajib diisi.");
-    valid = false;
-  }
-  if (!latarBelakang) {
-    showError("latarBelakang", "Silakan pilih salah satu.");
-    valid = false;
-  }
-
-  if (!valid) return;
-
-  formData.namaLengkap = namaLengkap;
-  formData.noWhatsApp = noWhatsApp;
-  formData.kotaDomisili = kotaDomisili;
-  formData.email = email;
-  formData.latarBelakang = latarBelakang;
-
-  if (latarBelakang === "pengusaha") {
-    goToStep("2A");
-  } else {
-    goToStep("2B");
-  }
-});
-
-// ---- Step 2A: Khusus Pengusaha ------------------------------------------
-document.getElementById("btn-step2A-back").addEventListener("click", () => {
-  goToStep(1);
-});
-
-document.getElementById("btn-step2A-next").addEventListener("click", () => {
-  const namaBisnis = document.getElementById("namaBisnis").value.trim();
-  const bidangUsaha = document.getElementById("bidangUsahaSelect").dataset.value || "";
-  const ketertarikanPengusaha = getRadioValue("ketertarikanPengusaha");
-
-  clearErrors(["namaBisnis", "bidangUsaha", "ketertarikanPengusaha"]);
-  let valid = true;
-
-  if (!namaBisnis) {
-    showError("namaBisnis", "Nama bisnis wajib diisi.");
-    valid = false;
-  }
-  if (!bidangUsaha) {
-    showError("bidangUsaha", "Silakan pilih bidang usaha.");
-    valid = false;
-  }
-  if (!ketertarikanPengusaha) {
-    showError("ketertarikanPengusaha", "Silakan pilih salah satu.");
-    valid = false;
-  }
-
-  if (!valid) return;
-
-  formData.namaBisnis = namaBisnis;
-  formData.bidangUsaha = bidangUsaha;
-  formData.ketertarikanPengusaha = ketertarikanPengusaha;
-
-  goToStep(3);
-});
-
-// ---- Step 2B: Khusus Profesional -----------------------------------------
-document.getElementById("btn-step2B-back").addEventListener("click", () => {
-  goToStep(1);
-});
-
-document.getElementById("btn-step2B-next").addEventListener("click", () => {
-  const profesi = document.getElementById("profesi").value.trim();
-  const instansi = document.getElementById("instansi").value.trim();
-  const kontribusiProfesional = getRadioValue("kontribusiProfesional");
-
-  clearErrors(["profesi", "instansi", "kontribusiProfesional"]);
-  let valid = true;
-
-  if (!profesi) {
-    showError("profesi", "Profesi/jabatan wajib diisi.");
-    valid = false;
-  }
-  if (!instansi) {
-    showError("instansi", "Instansi/tempat bekerja wajib diisi.");
-    valid = false;
-  }
-  if (!kontribusiProfesional) {
-    showError("kontribusiProfesional", "Silakan pilih salah satu.");
-    valid = false;
-  }
-
-  if (!valid) return;
-
-  formData.profesi = profesi;
-  formData.instansi = instansi;
-  formData.kontribusiProfesional = kontribusiProfesional;
-
-  goToStep(3);
-});
-
-// ---- Step 3: Pembayaran --------------------------------------------------
+// ---- Step 1: Data Umum, Pembayaran & Izin Follow-up ----------------------
 const MIN_NOMINAL = 350000;
 let uploadedFile = null;
 
@@ -301,16 +188,55 @@ document.getElementById("buktiBayar").addEventListener("change", (e) => {
   showError("buktiBayar", "");
 });
 
-document.getElementById("btn-step3-back").addEventListener("click", () => {
-  goToStep(formData.latarBelakang === "pengusaha" ? "2A" : "2B");
+document.querySelectorAll('input[name="latarBelakang"]').forEach((input) => {
+  input.addEventListener("change", () => {
+    document.getElementById("btn-step1-next").textContent =
+      input.value === "lainnya" ? "Submit" : "Lanjut";
+  });
 });
 
-document.getElementById("btn-step3-next").addEventListener("click", async () => {
+document.getElementById("btn-step1-back").addEventListener("click", () => {
+  goToStep(0);
+});
+
+document.getElementById("btn-step1-next").addEventListener("click", async () => {
+  const namaLengkap = document.getElementById("namaLengkap").value.trim();
+  const noWhatsApp = document.getElementById("noWhatsApp").value.trim();
+  const kotaDomisili = document.getElementById("kotaDomisili").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const latarBelakang = getRadioValue("latarBelakang");
   const nominalPilihan = getRadioValue("nominalBayarPilihan");
   const nominalLainnyaInput = document.getElementById("nominalLainnya");
+  const izinFollowUp = getRadioValue("izinFollowUp");
 
-  clearErrors(["nominalBayarPilihan", "nominalLainnya", "buktiBayar"]);
+  clearErrors([
+    "namaLengkap",
+    "noWhatsApp",
+    "kotaDomisili",
+    "latarBelakang",
+    "nominalBayarPilihan",
+    "nominalLainnya",
+    "buktiBayar",
+    "izinFollowUp"
+  ]);
   let valid = true;
+
+  if (!namaLengkap) {
+    showError("namaLengkap", "Nama lengkap wajib diisi.");
+    valid = false;
+  }
+  if (!noWhatsApp) {
+    showError("noWhatsApp", "No. WhatsApp wajib diisi.");
+    valid = false;
+  }
+  if (!kotaDomisili) {
+    showError("kotaDomisili", "Kota domisili wajib diisi.");
+    valid = false;
+  }
+  if (!latarBelakang) {
+    showError("latarBelakang", "Silakan pilih salah satu.");
+    valid = false;
+  }
 
   if (!nominalPilihan) {
     showError("nominalBayarPilihan", "Silakan pilih nominal.");
@@ -336,10 +262,14 @@ document.getElementById("btn-step3-next").addEventListener("click", async () => 
     showError("buktiBayar", "Bukti transfer wajib diunggah.");
     valid = false;
   }
+  if (!izinFollowUp) {
+    showError("izinFollowUp", "Silakan pilih salah satu.");
+    valid = false;
+  }
 
   if (!valid) return;
 
-  const nextBtn = document.getElementById("btn-step3-next");
+  const nextBtn = document.getElementById("btn-step1-next");
   const statusEl = document.getElementById("upload-status");
   const progressWrap = document.getElementById("upload-progress-wrap");
   const progressFill = document.getElementById("upload-progress-fill");
@@ -356,10 +286,25 @@ document.getElementById("btn-step3-next").addEventListener("click", async () => 
       progressFill.style.width = percent + "%";
       progressPercent.textContent = percent + "%";
     });
+
+    formData.namaLengkap = namaLengkap;
+    formData.noWhatsApp = noWhatsApp;
+    formData.kotaDomisili = kotaDomisili;
+    formData.email = email;
+    formData.latarBelakang = latarBelakang;
     formData.nominalBayar = nominalBayar;
     formData.buktiBayarUrl = uploadedUrl;
+    formData.izinFollowUp = izinFollowUp;
+
     statusEl.textContent = "Bukti transfer berhasil diunggah.";
-    goToStep(4);
+
+    if (latarBelakang === "pengusaha") {
+      goToStep("2A");
+    } else if (latarBelakang === "profesional") {
+      goToStep("2B");
+    } else {
+      await submitForm(nextBtn, "izinFollowUp");
+    }
   } catch (err) {
     statusEl.textContent = "";
     showError("buktiBayar", "Gagal mengunggah file. Silakan coba lagi.");
@@ -367,6 +312,144 @@ document.getElementById("btn-step3-next").addEventListener("click", async () => 
     nextBtn.disabled = false;
     progressWrap.classList.add("hidden");
   }
+});
+
+// ---- Step 2A: Khusus Pengusaha (final step, submits the form) -----------
+document.getElementById("btn-step2A-back").addEventListener("click", () => {
+  goToStep(1);
+});
+
+document.querySelector('#bidangUsahaOptions li[data-value="Lainnya"]').addEventListener("click", () => {
+  document.getElementById("bidangUsaha-lainnya-wrap").classList.remove("hidden");
+});
+
+document.querySelectorAll('#bidangUsahaOptions li:not([data-value="Lainnya"])').forEach((li) => {
+  li.addEventListener("click", () => {
+    document.getElementById("bidangUsaha-lainnya-wrap").classList.add("hidden");
+    document.getElementById("bidangUsahaLainnya").value = "";
+    showError("bidangUsahaLainnya", "");
+  });
+});
+
+document.querySelector('input[name="ketertarikanPengusaha"][value="Lainnya"]').addEventListener("change", (e) => {
+  const wrap = document.getElementById("ketertarikan-lainnya-wrap");
+  if (e.target.checked) {
+    wrap.classList.remove("hidden");
+  } else {
+    wrap.classList.add("hidden");
+    document.getElementById("ketertarikanLainnya").value = "";
+    showError("ketertarikanLainnya", "");
+  }
+});
+
+document.getElementById("btn-step2A-next").addEventListener("click", async () => {
+  const namaBisnis = document.getElementById("namaBisnis").value.trim();
+  const bidangUsahaPilihan = document.getElementById("bidangUsahaSelect").dataset.value || "";
+  const bidangUsahaLainnyaInput = document.getElementById("bidangUsahaLainnya");
+  const ketertarikanPengusaha = getCheckboxValues("ketertarikanPengusaha");
+  const ketertarikanLainnyaInput = document.getElementById("ketertarikanLainnya");
+
+  clearErrors([
+    "namaBisnis",
+    "bidangUsaha",
+    "bidangUsahaLainnya",
+    "ketertarikanPengusaha",
+    "ketertarikanLainnya"
+  ]);
+  let valid = true;
+
+  if (!namaBisnis) {
+    showError("namaBisnis", "Nama bisnis wajib diisi.");
+    valid = false;
+  }
+  if (!bidangUsahaPilihan) {
+    showError("bidangUsaha", "Silakan pilih bidang usaha.");
+    valid = false;
+  } else if (bidangUsahaPilihan === "Lainnya" && !bidangUsahaLainnyaInput.value.trim()) {
+    showError("bidangUsahaLainnya", "Silakan isi bidang usaha Anda.");
+    valid = false;
+  }
+
+  if (ketertarikanPengusaha.length === 0) {
+    showError("ketertarikanPengusaha", "Silakan pilih minimal satu.");
+    valid = false;
+  } else if (ketertarikanPengusaha.includes("Lainnya") && !ketertarikanLainnyaInput.value.trim()) {
+    showError("ketertarikanLainnya", "Silakan isi ketertarikan Anda.");
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  const bidangUsaha =
+    bidangUsahaPilihan === "Lainnya" ? bidangUsahaLainnyaInput.value.trim() : bidangUsahaPilihan;
+  const ketertarikanFinal = ketertarikanPengusaha.map((value) =>
+    value === "Lainnya" ? `Lainnya: ${ketertarikanLainnyaInput.value.trim()}` : value
+  );
+
+  formData.namaBisnis = namaBisnis;
+  formData.bidangUsaha = bidangUsaha;
+  formData.ketertarikanPengusaha = ketertarikanFinal.join(" | ");
+
+  await submitForm(document.getElementById("btn-step2A-next"), "ketertarikanPengusaha");
+});
+
+// ---- Step 2B: Khusus Profesional (final step, submits the form) ---------
+document.getElementById("btn-step2B-back").addEventListener("click", () => {
+  goToStep(1);
+});
+
+document.querySelector('input[name="ketertarikanProfesional"][value="Lainnya"]').addEventListener("change", (e) => {
+  const wrap = document.getElementById("ketertarikanProfesional-lainnya-wrap");
+  if (e.target.checked) {
+    wrap.classList.remove("hidden");
+  } else {
+    wrap.classList.add("hidden");
+    document.getElementById("ketertarikanProfesionalLainnya").value = "";
+    showError("ketertarikanProfesionalLainnya", "");
+  }
+});
+
+document.getElementById("btn-step2B-next").addEventListener("click", async () => {
+  const profesi = document.getElementById("profesi").value.trim();
+  const instansi = document.getElementById("instansi").value.trim();
+  const ketertarikanProfesional = getCheckboxValues("ketertarikanProfesional");
+  const ketertarikanLainnyaInput = document.getElementById("ketertarikanProfesionalLainnya");
+
+  clearErrors([
+    "profesi",
+    "instansi",
+    "ketertarikanProfesional",
+    "ketertarikanProfesionalLainnya"
+  ]);
+  let valid = true;
+
+  if (!profesi) {
+    showError("profesi", "Profesi/jabatan wajib diisi.");
+    valid = false;
+  }
+  if (!instansi) {
+    showError("instansi", "Instansi/tempat bekerja wajib diisi.");
+    valid = false;
+  }
+  if (ketertarikanProfesional.length === 0) {
+    showError("ketertarikanProfesional", "Silakan pilih minimal satu.");
+    valid = false;
+  } else if (ketertarikanProfesional.includes("Lainnya") && !ketertarikanLainnyaInput.value.trim()) {
+    showError("ketertarikanProfesionalLainnya", "Silakan isi ketertarikan Anda.");
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  const ketertarikanFinal = ketertarikanProfesional.map((value) =>
+    value === "Lainnya" ? `Lainnya: ${ketertarikanLainnyaInput.value.trim()}` : value
+  );
+
+  formData.profesi = profesi;
+  formData.instansi = instansi;
+  formData.ketertarikanProfesional = ketertarikanFinal.join(" | ");
+
+  await submitForm(document.getElementById("btn-step2B-next"), "ketertarikanProfesional");
 });
 
 // ---- A. Google Drive Upload Flow (via Apps Script) -----------------------
@@ -428,36 +511,22 @@ async function uploadFileToDrive(file, onProgress) {
   }
 }
 
-// ---- Step 4: Consent & Submit --------------------------------------------
-document.getElementById("btn-step4-back").addEventListener("click", () => {
-  goToStep(3);
-});
-
-document.getElementById("btn-submit").addEventListener("click", async () => {
-  const izinFollowUp = getRadioValue("izinFollowUp");
-
-  clearErrors(["izinFollowUp"]);
-  if (!izinFollowUp) {
-    showError("izinFollowUp", "Silakan pilih salah satu.");
-    return;
-  }
-
-  formData.izinFollowUp = izinFollowUp;
-
-  const submitBtn = document.getElementById("btn-submit");
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Mengirim...";
+// ---- Final submit helper (used by both step 2A and step 2B) -------------
+async function submitForm(button, errorFieldId) {
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = "Mengirim...";
 
   try {
     await submitToWebhook(formData);
     goToStep("success");
   } catch (err) {
-    showError("izinFollowUp", "Gagal mengirim data. Silakan coba lagi.");
+    showError(errorFieldId, "Gagal mengirim data. Silakan coba lagi.");
   } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Submit";
+    button.disabled = false;
+    button.textContent = originalText;
   }
-});
+}
 
 // ---- B. Google Sheets Webhook Flow ----------------------------------------
 // Sends the full formData object to your Google Apps Script webhook.
