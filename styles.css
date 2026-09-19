@@ -283,10 +283,19 @@ input[type="file"] {
   height: 0;
 }
 
+.radio-label:hover {
+  background: #F5F8FF;
+  border-color: var(--color-accent);
+}
+
 .radio-label.checked {
   background: #3B82F6;
   color: #fff;
   border-color: var(--color-accent);
+}
+
+.radio-label.checked:hover {
+  background: #3B82F6;
 }
 
 .radio-hint {

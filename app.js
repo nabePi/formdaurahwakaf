@@ -157,6 +157,7 @@ document.getElementById("btn-start").addEventListener("click", () => {
 
 // ---- Step 1: Data Umum, Pembayaran & Izin Follow-up ----------------------
 const MIN_NOMINAL = 350000;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 let uploadedFile = null;
 
 document.querySelectorAll('input[name="nominalBayarPilihan"]').forEach((input) => {
@@ -213,6 +214,7 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
     "namaLengkap",
     "noWhatsApp",
     "kotaDomisili",
+    "email",
     "latarBelakang",
     "nominalBayarPilihan",
     "nominalLainnya",
@@ -231,6 +233,10 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
   }
   if (!kotaDomisili) {
     showError("kotaDomisili", "Kota domisili wajib diisi.");
+    valid = false;
+  }
+  if (email && !EMAIL_REGEX.test(email)) {
+    showError("email", "Format email tidak valid.");
     valid = false;
   }
   if (!latarBelakang) {
