@@ -20,9 +20,6 @@ let formData = {
   nominalBayar: 0,
   buktiBayarUrl: "",
 
-  // Step 1: Consent
-  izinFollowUp: "",
-
   // Step 2A: Pengusaha
   namaBisnis: "",
   bidangUsaha: "",
@@ -155,7 +152,7 @@ document.getElementById("btn-start").addEventListener("click", () => {
   goToStep(1);
 });
 
-// ---- Step 1: Data Umum, Pembayaran & Izin Follow-up ----------------------
+// ---- Step 1: Data Umum & Pembayaran ---------------------------------------
 const MIN_NOMINAL = 350000;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 let uploadedFile = null;
@@ -208,7 +205,6 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
   const latarBelakang = getRadioValue("latarBelakang");
   const nominalPilihan = getRadioValue("nominalBayarPilihan");
   const nominalLainnyaInput = document.getElementById("nominalLainnya");
-  const izinFollowUp = getRadioValue("izinFollowUp");
 
   clearErrors([
     "namaLengkap",
@@ -218,8 +214,7 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
     "latarBelakang",
     "nominalBayarPilihan",
     "nominalLainnya",
-    "buktiBayar",
-    "izinFollowUp"
+    "buktiBayar"
   ]);
   let valid = true;
 
@@ -268,10 +263,6 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
     showError("buktiBayar", "Bukti transfer wajib diunggah.");
     valid = false;
   }
-  if (!izinFollowUp) {
-    showError("izinFollowUp", "Silakan pilih salah satu.");
-    valid = false;
-  }
 
   if (!valid) return;
 
@@ -300,7 +291,6 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
     formData.latarBelakang = latarBelakang;
     formData.nominalBayar = nominalBayar;
     formData.buktiBayarUrl = uploadedUrl;
-    formData.izinFollowUp = izinFollowUp;
 
     statusEl.textContent = "Bukti transfer berhasil diunggah.";
 
@@ -309,7 +299,7 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
     } else if (latarBelakang === "profesional") {
       goToStep("2B");
     } else {
-      await submitForm(nextBtn, "izinFollowUp");
+      await submitForm(nextBtn, "buktiBayar");
     }
   } catch (err) {
     statusEl.textContent = "";
