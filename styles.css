@@ -81,6 +81,21 @@ body {
   text-align: center;
 }
 
+.event-subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+.event-speaker {
+  font-size: 0.95rem;
+  color: var(--color-muted);
+  text-align: center;
+  margin: 0 0 4px;
+}
+
 .event-date {
   font-size: 1.1rem;
   color: var(--color-muted);
