@@ -318,10 +318,20 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
   progressPercent.textContent = "0%";
 
   try {
-    const uploadedUrl = await uploadFileToDrive(uploadedFile, (percent) => {
-      progressFill.style.width = percent + "%";
-      progressPercent.textContent = percent + "%";
-    });
+    const driveFileName = buildBuktiBayarFileName(
+      namaLengkap,
+      noWhatsApp,
+      nominalBayar,
+      uploadedFile
+    );
+    const uploadedUrl = await uploadFileToDrive(
+      uploadedFile,
+      (percent) => {
+        progressFill.style.width = percent + "%";
+        progressPercent.textContent = percent + "%";
+      },
+      driveFileName
+    );
 
     formData.namaLengkap = namaLengkap;
     formData.noWhatsApp = noWhatsApp;
@@ -517,7 +527,34 @@ function simulateProgress(onProgress) {
   return () => clearInterval(interval);
 }
 
-async function uploadFileToDrive(file, onProgress) {
+// Builds "NamaLengkap_NoWhatsApp_Nominal.ext" for the Drive file, keeping the
+// original file's extension (jpg/png/pdf/...) so it's still opened correctly.
+function sanitizeForFileName(value) {
+  return String(value)
+    .trim()
+    .replace(/[^a-zA-Z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+function getFileExtension(file) {
+  const match = /\.([a-zA-Z0-9]+)$/.exec(file.name || "");
+  if (match) return match[1].toLowerCase();
+  if (file.type === "image/jpeg") return "jpg";
+  if (file.type === "image/png") return "png";
+  if (file.type === "application/pdf") return "pdf";
+  return "";
+}
+
+function buildBuktiBayarFileName(namaLengkap, noWhatsApp, nominalBayar, file) {
+  const base = [namaLengkap, noWhatsApp, nominalBayar]
+    .map(sanitizeForFileName)
+    .filter(Boolean)
+    .join("_");
+  const ext = getFileExtension(file);
+  return ext ? `${base}.${ext}` : base;
+}
+
+async function uploadFileToDrive(file, onProgress, fileName) {
   const fileData = await readFileAsBase64(file);
   if (onProgress) onProgress(5);
 
@@ -528,7 +565,7 @@ async function uploadFileToDrive(file, onProgress) {
       method: "POST",
       body: JSON.stringify({
         action: "uploadFile",
-        fileName: file.name,
+        fileName: fileName || file.name,
         fileType: file.type,
         fileData: fileData
       })
