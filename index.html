@@ -107,6 +107,15 @@
     <h2 class="question">Bukti Transfer</h2>
     <input type="file" id="buktiBayar" accept="image/*, application/pdf">
     <span class="error-msg" id="err-buktiBayar"></span>
+
+    <div id="file-preview-wrap" class="file-preview-wrap hidden">
+      <img id="file-preview-image" class="file-preview-image hidden" alt="Preview bukti transfer">
+      <div id="file-preview-file" class="file-preview-file hidden">
+        <span class="file-preview-icon">📄</span>
+        <span id="file-preview-filename" class="file-preview-filename"></span>
+      </div>
+    </div>
+
     <p id="upload-status" class="upload-status"></p>
     <div class="upload-progress-wrap hidden" id="upload-progress-wrap">
       <div class="upload-progress-bar"><div class="upload-progress-fill" id="upload-progress-fill"></div></div>

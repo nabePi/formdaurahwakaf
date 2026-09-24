@@ -184,7 +184,46 @@ document.getElementById("nominalLainnya").addEventListener("input", (e) => {
 document.getElementById("buktiBayar").addEventListener("change", (e) => {
   uploadedFile = e.target.files[0] || null;
   showError("buktiBayar", "");
+  showFilePreview(uploadedFile);
 });
+
+// Preview the selected bukti transfer file (image thumbnail or filename for PDFs)
+// before it's uploaded, so the user can confirm they picked the right file.
+let currentPreviewUrl = null;
+
+function showFilePreview(file) {
+  const wrap = document.getElementById("file-preview-wrap");
+  const imageEl = document.getElementById("file-preview-image");
+  const fileEl = document.getElementById("file-preview-file");
+  const filenameEl = document.getElementById("file-preview-filename");
+
+  if (currentPreviewUrl) {
+    URL.revokeObjectURL(currentPreviewUrl);
+    currentPreviewUrl = null;
+  }
+
+  if (!file) {
+    wrap.classList.add("hidden");
+    imageEl.classList.add("hidden");
+    fileEl.classList.add("hidden");
+    imageEl.src = "";
+    return;
+  }
+
+  wrap.classList.remove("hidden");
+  currentPreviewUrl = URL.createObjectURL(file);
+
+  if (file.type.startsWith("image/")) {
+    imageEl.src = currentPreviewUrl;
+    imageEl.classList.remove("hidden");
+    fileEl.classList.add("hidden");
+  } else {
+    imageEl.classList.add("hidden");
+    imageEl.src = "";
+    filenameEl.textContent = file.name;
+    fileEl.classList.remove("hidden");
+  }
+}
 
 document.querySelectorAll('input[name="latarBelakang"]').forEach((input) => {
   input.addEventListener("change", () => {

@@ -244,6 +244,36 @@ input[type="file"] {
   padding: 10px 0;
 }
 
+.file-preview-wrap {
+  margin-top: 12px;
+}
+
+.file-preview-image {
+  display: block;
+  max-width: 100%;
+  max-height: 240px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.file-preview-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.file-preview-icon {
+  font-size: 1.3rem;
+}
+
+.file-preview-filename {
+  overflow-wrap: anywhere;
+}
+
 .upload-status {
   font-size: 0.85rem;
   color: var(--color-muted);
