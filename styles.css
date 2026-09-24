@@ -85,7 +85,22 @@ body {
   font-size: 1.1rem;
   color: var(--color-muted);
   text-align: center;
+  margin: 0 0 4px;
+}
+
+.event-location {
+  font-size: 1rem;
+  text-align: center;
   margin: 0 0 32px;
+}
+
+.event-location a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.event-location a:hover {
+  text-decoration: underline;
 }
 
 /* Questions */
