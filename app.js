@@ -338,7 +338,7 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
     } else if (latarBelakang === "profesional") {
       goToStep("2B");
     } else {
-      await submitForm(nextBtn, "buktiBayar");
+      await submitForm(nextBtn);
     }
   } catch (err) {
     statusEl.textContent = "";
@@ -425,7 +425,7 @@ document.getElementById("btn-step2A-next").addEventListener("click", async () =>
   formData.bidangUsaha = bidangUsaha;
   formData.ketertarikanPengusaha = ketertarikanFinal.join(" | ");
 
-  await submitForm(document.getElementById("btn-step2A-next"), "ketertarikanPengusaha");
+  await submitForm(document.getElementById("btn-step2A-next"));
 });
 
 // ---- Step 2B: Khusus Profesional (final step, submits the form) ---------
@@ -484,7 +484,7 @@ document.getElementById("btn-step2B-next").addEventListener("click", async () =>
   formData.instansi = instansi;
   formData.ketertarikanProfesional = ketertarikanFinal.join(" | ");
 
-  await submitForm(document.getElementById("btn-step2B-next"), "ketertarikanProfesional");
+  await submitForm(document.getElementById("btn-step2B-next"));
 });
 
 // ---- A. Google Drive Upload Flow (via Apps Script) -----------------------
@@ -547,20 +547,27 @@ async function uploadFileToDrive(file, onProgress) {
 }
 
 // ---- Final submit helper (used by both step 2A and step 2B) -------------
-async function submitForm(button, errorFieldId) {
+// Google Apps Script executes doPost as soon as the POST arrives, regardless
+// of whether the client goes on to successfully read the response. A failed
+// fetch() here (e.g. the client dropping the follow-up redirect fetch to
+// script.googleusercontent.com) almost always means the data was already
+// saved, so we treat any outcome as success rather than risk the user
+// resubmitting and creating a duplicate row.
+async function submitForm(button) {
   const originalText = button.textContent;
   button.disabled = true;
   button.textContent = "Mengirim...";
 
   try {
     await submitToWebhook(formData);
-    goToStep("success");
   } catch (err) {
-    showError(errorFieldId, "Gagal mengirim data. Silakan coba lagi.");
+    console.error("Gagal membaca response webhook (data kemungkinan tetap tersimpan):", err);
   } finally {
     button.disabled = false;
     button.textContent = originalText;
   }
+
+  goToStep("success");
 }
 
 // ---- B. Google Sheets Webhook Flow ----------------------------------------
