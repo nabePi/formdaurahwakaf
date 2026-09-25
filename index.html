@@ -75,45 +75,35 @@
     </div>
 
     <h2 class="question">Biaya Pendaftaran</h2>
-    <p class="section-intro">Wajib dicentang untuk melanjutkan pendaftaran</p>
-    <div class="radio-group" id="group-biayaPendaftaran">
+    <p class="section-intro">Anda boleh memilih salah satu opsi berikut ini</p>
+    <div class="radio-group" id="group-nominalBayar">
       <label class="radio-label">
-        <input type="checkbox" id="biayaPendaftaranConfirm" name="biayaPendaftaranConfirm" value="350000">
+        <input type="radio" name="nominalBayarPilihan" value="350000">
         Rp 350.000
       </label>
-    </div>
-    <span class="error-msg" id="err-biayaPendaftaranConfirm"></span>
-
-    <h2 class="question">Infaq <span class="optional-label">(opsional)</span></h2>
-    <p class="section-intro">Infaq bersifat sukarela, Anda boleh memilih salah satu opsi berikut ini</p>
-    <div class="radio-group" id="group-infaqBayar">
       <label class="radio-label">
-        <input type="radio" name="infaqBayarPilihan" value="100000">
-        Rp 100.000
+        <input type="radio" name="nominalBayarPilihan" value="400000">
+        Rp 400.000
       </label>
       <label class="radio-label">
-        <input type="radio" name="infaqBayarPilihan" value="200000">
-        Rp 200.000
-      </label>
-      <label class="radio-label">
-        <input type="radio" name="infaqBayarPilihan" value="500000">
+        <input type="radio" name="nominalBayarPilihan" value="500000">
         Rp 500.000
       </label>
       <label class="radio-label">
-        <input type="radio" name="infaqBayarPilihan" value="1000000">
+        <input type="radio" name="nominalBayarPilihan" value="1000000">
         Rp 1.000.000
       </label>
       <label class="radio-label">
-        <input type="radio" name="infaqBayarPilihan" value="lainnya">
+        <input type="radio" name="nominalBayarPilihan" value="lainnya">
         Lainnya
       </label>
     </div>
-    <span class="error-msg" id="err-infaqBayarPilihan"></span>
+    <span class="error-msg" id="err-nominalBayarPilihan"></span>
 
-    <div id="infaq-lainnya-wrap" class="hidden">
-      <h2 class="question">Nominal Infaq Lainnya</h2>
-      <input type="number" id="infaqLainnya" placeholder="Nominal infaq">
-      <span class="error-msg" id="err-infaqLainnya"></span>
+    <div id="nominal-lainnya-wrap" class="hidden">
+      <h2 class="question">Nominal Lainnya</h2>
+      <input type="number" id="nominalLainnya" placeholder="Minimal Rp 350.000">
+      <span class="error-msg" id="err-nominalLainnya"></span>
     </div>
 
     <h2 class="question">Bukti Transfer</h2>

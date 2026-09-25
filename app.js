@@ -17,8 +17,7 @@ let formData = {
   latarBelakang: "", // "pengusaha" | "profesional"
 
   // Step 1: Payment
-  nominalBayar: 0, // Biaya pendaftaran (fixed Rp 350.000)
-  infaq: 0,
+  nominalBayar: 0,
   buktiBayarUrl: "",
 
   // Step 2A: Pengusaha
@@ -154,48 +153,31 @@ document.getElementById("btn-start").addEventListener("click", () => {
 });
 
 // ---- Step 1: Data Umum & Pembayaran ---------------------------------------
+const MIN_NOMINAL = 350000;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 let uploadedFile = null;
 
-document.getElementById("biayaPendaftaranConfirm").addEventListener("change", () => {
-  showError("biayaPendaftaranConfirm", "");
-});
-
-document.querySelectorAll('input[name="infaqBayarPilihan"]').forEach((input) => {
-  // Radios can't natively be unchecked by clicking them again. Track the
-  // pre-click state on mousedown (before the browser applies its default
-  // check action) so the click handler can detect "clicked the already
-  // selected option" and uncheck it, since Infaq is optional. The input
-  // itself is visually hidden, so real clicks land on its wrapping
-  // .radio-label — mousedown must be observed there, not on the input.
-  input.closest(".radio-label").addEventListener("mousedown", () => {
-    input.dataset.wasChecked = input.checked ? "true" : "false";
-  });
-
-  input.addEventListener("click", () => {
-    if (input.dataset.wasChecked === "true") {
-      input.checked = false;
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-    }
-  });
-
+document.querySelectorAll('input[name="nominalBayarPilihan"]').forEach((input) => {
   input.addEventListener("change", () => {
-    const lainnyaWrap = document.getElementById("infaq-lainnya-wrap");
-    if (input.checked && input.value === "lainnya") {
+    const lainnyaWrap = document.getElementById("nominal-lainnya-wrap");
+    if (input.value === "lainnya") {
       lainnyaWrap.classList.remove("hidden");
     } else {
       lainnyaWrap.classList.add("hidden");
-      showError("infaqLainnya", "");
+      showError("nominalLainnya", "");
     }
   });
 });
 
-document.getElementById("infaqLainnya").addEventListener("input", (e) => {
+document.getElementById("nominalLainnya").addEventListener("input", (e) => {
   const value = Number(e.target.value);
-  if (e.target.value && value <= 0) {
-    showError("infaqLainnya", "Nominal infaq tidak valid.");
+  if (e.target.value && value < MIN_NOMINAL) {
+    showError(
+      "nominalLainnya",
+      "Mohon maaf, nominal minimal adalah Rp 350.000"
+    );
   } else {
-    showError("infaqLainnya", "");
+    showError("nominalLainnya", "");
   }
 });
 
@@ -260,9 +242,8 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
   const kotaDomisili = document.getElementById("kotaDomisili").value.trim();
   const email = document.getElementById("email").value.trim();
   const latarBelakang = getRadioValue("latarBelakang");
-  const biayaPendaftaranConfirmInput = document.getElementById("biayaPendaftaranConfirm");
-  const infaqPilihan = getRadioValue("infaqBayarPilihan");
-  const infaqLainnyaInput = document.getElementById("infaqLainnya");
+  const nominalPilihan = getRadioValue("nominalBayarPilihan");
+  const nominalLainnyaInput = document.getElementById("nominalLainnya");
 
   clearErrors([
     "namaLengkap",
@@ -270,8 +251,8 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
     "kotaDomisili",
     "email",
     "latarBelakang",
-    "biayaPendaftaranConfirm",
-    "infaqLainnya",
+    "nominalBayarPilihan",
+    "nominalLainnya",
     "buktiBayar"
   ]);
   let valid = true;
@@ -297,19 +278,22 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
     valid = false;
   }
 
-  if (!biayaPendaftaranConfirmInput.checked) {
-    showError("biayaPendaftaranConfirm", "Biaya pendaftaran wajib dicentang.");
+  if (!nominalPilihan) {
+    showError("nominalBayarPilihan", "Silakan pilih nominal.");
     valid = false;
   }
 
-  let infaq = Number(infaqPilihan) || 0;
-  if (infaqPilihan === "lainnya") {
-    infaq = Number(infaqLainnyaInput.value);
-    if (!infaqLainnyaInput.value) {
-      showError("infaqLainnya", "Nominal infaq wajib diisi.");
+  let nominalBayar = Number(nominalPilihan);
+  if (nominalPilihan === "lainnya") {
+    nominalBayar = Number(nominalLainnyaInput.value);
+    if (!nominalLainnyaInput.value) {
+      showError("nominalLainnya", "Nominal wajib diisi.");
       valid = false;
-    } else if (infaq <= 0) {
-      showError("infaqLainnya", "Nominal infaq tidak valid.");
+    } else if (nominalBayar < MIN_NOMINAL) {
+      showError(
+        "nominalLainnya",
+        "Mohon maaf, nominal minimal adalah Rp 350.000"
+      );
       valid = false;
     }
   }
@@ -344,8 +328,7 @@ document.getElementById("btn-step1-next").addEventListener("click", async () => 
     formData.kotaDomisili = kotaDomisili;
     formData.email = email;
     formData.latarBelakang = latarBelakang;
-    formData.nominalBayar = Number(biayaPendaftaranConfirmInput.value);
-    formData.infaq = infaq;
+    formData.nominalBayar = nominalBayar;
     formData.buktiBayarUrl = uploadedUrl;
 
     statusEl.textContent = "Bukti transfer berhasil diunggah.";
